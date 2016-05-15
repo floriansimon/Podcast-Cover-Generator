@@ -1,4 +1,9 @@
 <?php
+if(empty($_FILES)){
+    header('Location: index.php');
+    return;
+}
+
 if (isset($_FILES['file'])) {
     $imageFile = $_FILES['file']['tmp_name'];
 
@@ -25,7 +30,7 @@ function testInputData($data){
 
 
     if ($width == null && $height == null) {
-        header("Location: index.php");
+        header('Location: index.php');
         return;
     }
 
@@ -39,6 +44,17 @@ function testInputData($data){
     }
 
     var_dump($subtitle);
+
+    if(isset($_POST['titleSize'])){
+        $titleSize = testInputData($_POST['titleSize']);
+    }
+    var_dump($titleSize);
+
+    if(isset($_POST['subtitleSize'])){
+        $subtitleSize = testInputData($_POST['subtitleSize']);
+    }
+    var_dump($subtitleSize);
+
 
     $image = new Imagick($imageFile);
     $image->cropThumbnailImage(1600,1600);
@@ -54,7 +70,7 @@ function testInputData($data){
     $drawTitle->setFillColor('#FFFFFF');
     $drawTitle->setFillOpacity(1);
     $drawTitle->setFont('fonts/BoldFont.ttf');
-    $drawTitle->setFontSize(150);
+    $drawTitle->setFontSize($titleSize);
     $drawTitle->setTextKerning(-6);
     $drawTitle->setTextEncoding('UTF-8');
     $drawTitle->setTextAntialias(true);
@@ -65,7 +81,7 @@ function testInputData($data){
     $drawSubtitle->setFillColor('#FFFFFF');
     $drawSubtitle->setFillOpacity(1);
     $drawSubtitle->setFont('fonts/ThinFont.ttf');
-    $drawSubtitle->setFontSize(100);
+    $drawSubtitle->setFontSize($subtitleSize);
     $drawSubtitle->setTextKerning(-3);
     $drawSubtitle->setTextEncoding('UTF-8');
     $drawSubtitle->setTextAntialias(true);
@@ -76,7 +92,6 @@ function testInputData($data){
     $image->drawImage($drawTitle);
     $image->drawImage($drawSubtitle);
 
-    var_dump($image->getFormat());
     var_dump($image->getImageFormat());
 
     $image->setImageCompressionQuality(90); 
@@ -97,6 +112,7 @@ function testInputData($data){
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Cover</title>
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
